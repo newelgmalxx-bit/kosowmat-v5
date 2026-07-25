@@ -188,8 +188,8 @@ export const partnerAuth = {
     );
     const d = r.data;
     if (d?.requiresOtp) return d;
-    if (d?.token) setToken(d.token);
-    if (d?.partner) setStoredPartner(d.partner);
+    if (d?.partner) setStoredPartner(d.partner);   // store partner data first
+    if (d?.token) setToken(d.token);               // then token (fires 'saba:auth' event)
     return d;
   },
 
@@ -199,8 +199,8 @@ export const partnerAuth = {
       { method: "POST", body: JSON.stringify({ email: body.email, otp: body.otp }) },
     );
     const d = r.data;
-    if (d?.token) setToken(d.token);
-    if (d?.partner) setStoredPartner(d.partner);
+    if (d?.partner) setStoredPartner(d.partner);   // store partner data first
+    if (d?.token) setToken(d.token);               // then token (fires 'saba:auth' event)
     return d;
   },
 
