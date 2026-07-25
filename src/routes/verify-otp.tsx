@@ -59,11 +59,14 @@ function VerifyOtpPage() {
         const d: any = await partnerAuth.verifyLoginOtp({ email: email.trim(), otp: otp.trim() });
         if (d?.partner) setStoredPartner(d.partner);
         if (d?.user) setStoredUser(d.user);
-        await refresh();
+        // NOTE: do NOT call refresh() here — refresh() hits /auth/me (user endpoint)
+        // which returns 401 for a partner token and would clear saba_token, causing
+        // an immediate auto-logout. Partner session is owned by PartnerGuard + partnerAuth.me().
         toast.success(t("auth.loggedIn"));
         navigate({ to: "/partner-dashboard" as any });
         return;
       }
+
       const data: any = mode === "login"
         ? await authApi.verifyEmailOtp({ email: email.trim(), otp: otp.trim() })
         : await authApi.verifyRegisterOtp({ email: email.trim(), otp: otp.trim() });
