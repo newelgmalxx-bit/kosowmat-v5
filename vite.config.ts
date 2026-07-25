@@ -74,8 +74,22 @@ export default defineConfig({
             if (id.includes("node_modules/lucide-react")) {
               return "lucide-icons";
             }
+            // Keep recharts + its deps in a single chunk to avoid a
+            // Rollup tree-shake/code-split bug that produced a truncated
+            // generateCategoricalChart chunk ("Unexpected end of input").
+            if (
+              id.includes("node_modules/recharts") ||
+              id.includes("node_modules/victory-vendor") ||
+              id.includes("node_modules/d3-") ||
+              id.includes("node_modules/internmap") ||
+              id.includes("node_modules/react-smooth") ||
+              id.includes("node_modules/recharts-scale")
+            ) {
+              return "recharts";
+            }
             return undefined;
           },
+
         },
       },
     },
