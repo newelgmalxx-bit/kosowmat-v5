@@ -1,7 +1,9 @@
 import { createContext, useContext, useEffect, useState, useCallback, type ReactNode } from "react";
 import api, { clearToken, getToken, getUser, setToken, ApiError } from "@/lib/api";
 import { auth as authApi } from "@/lib/api/auth";
+import { getStoredPartner } from "@/lib/api/partner";
 import type { User } from "@/lib/api";
+
 
 type LoginResult =
   | { user: User; token: string; requiresOtp?: false }
