@@ -36,6 +36,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(false);
       return;
     }
+    // If a partner session is active, the stored saba_token is a PARTNER JWT.
+    // Hitting /auth/me (the regular user endpoint) would return 401 and cause
+    // this hook to clearToken() → the partner gets auto-logged out.
+    // Partner session lifecycle is owned by PartnerGuard + partnerAuth.me().
+    if (getStoredPartner()) {
+      setUser(null);
+      setLoading(false);
+      return;
+    }
+
     const useStoredUser = () => {
       const stored = getUser();
       if (stored) setUser(stored);
