@@ -476,7 +476,7 @@ function SlideVisual({
   const { lang, dir } = useLang();
   const L = (a: string, e: string) => (lang === "en" ? e : a);
   const { ads, offers, partners } = sponsoredBundle;
-  const allowDynamicAdImage = active && slideIndex !== 0;
+  const allowDynamicAdImage = active;
   const ad =
     active
       ? ads.find((a) => Number(a.slide_index) === slideIndex + 1) ||
