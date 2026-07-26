@@ -25,6 +25,8 @@ type Props = Omit<ImgHTMLAttributes<HTMLImageElement>, "loading"> & {
   quality?: number;
   /** Force loading strategy. */
   loading?: "lazy" | "eager";
+  /** wsrv.nl fit strategy. Default "cover". Use "contain"/"inside" to show the full image without cropping. */
+  fit?: "cover" | "contain" | "inside" | "outside" | "fill";
 };
 
 const DEFAULT_WIDTHS = [240, 320, 480, 640, 800, 1024];
@@ -34,13 +36,13 @@ function isRemote(src: string): boolean {
   return /^https?:\/\//i.test(src);
 }
 
-function proxied(src: string, w: number, q: number): string {
+function proxied(src: string, w: number, q: number, fit: string): string {
   const u = new URL("https://wsrv.nl/");
   u.searchParams.set("url", src.replace(/^https?:\/\//i, ""));
   u.searchParams.set("w", String(w));
   u.searchParams.set("output", "webp");
   u.searchParams.set("q", String(q));
-  u.searchParams.set("fit", "cover");
+  u.searchParams.set("fit", fit);
   u.searchParams.set("we", ""); // without-enlargement
   u.searchParams.set("il", ""); // interlace/progressive
   return u.toString();
@@ -57,6 +59,7 @@ export const SmartImage = forwardRef<HTMLImageElement, Props>(function SmartImag
     loading,
     width,
     height,
+    fit = "cover",
     ...rest
   },
   ref,
@@ -65,10 +68,10 @@ export const SmartImage = forwardRef<HTMLImageElement, Props>(function SmartImag
     if (!src || !isRemote(src)) {
       return { finalSrc: src, srcSet: undefined as string | undefined };
     }
-    const set = widths.map((w) => `${proxied(src, w, quality)} ${w}w`).join(", ");
+    const set = widths.map((w) => `${proxied(src, w, quality, fit)} ${w}w`).join(", ");
     const fallbackW = widths.find((w) => w >= 480) ?? widths[0] ?? 480;
-    return { finalSrc: proxied(src, fallbackW, quality), srcSet: set };
-  }, [src, widths, quality]);
+    return { finalSrc: proxied(src, fallbackW, quality, fit), srcSet: set };
+  }, [src, widths, quality, fit]);
 
   return (
     <img

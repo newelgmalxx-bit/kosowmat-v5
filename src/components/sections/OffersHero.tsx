@@ -476,7 +476,7 @@ function SlideVisual({
   const { lang, dir } = useLang();
   const L = (a: string, e: string) => (lang === "en" ? e : a);
   const { ads, offers, partners } = sponsoredBundle;
-  const allowDynamicAdImage = active && slideIndex !== 0;
+  const allowDynamicAdImage = active;
   const ad =
     active
       ? ads.find((a) => Number(a.slide_index) === slideIndex + 1) ||
@@ -554,9 +554,11 @@ function SlideVisual({
           widths={[320, 480, 640, 800]}
           priority={slideIndex === 0}
           loading={slideIndex === 0 ? "eager" : "lazy"}
-          quality={68}
-          className="aspect-[5/4] w-full object-cover sm:aspect-[4/5]"
+          quality={72}
+          fit={useOfferImage ? "inside" : "cover"}
+          className={`aspect-[5/4] w-full sm:aspect-[4/5] ${useOfferImage ? "bg-muted object-contain" : "object-cover"}`}
         />
+
 
         <div className="absolute top-2 end-2 flex flex-col items-end gap-1.5 sm:top-3 sm:end-3">
           <div
